@@ -59,25 +59,24 @@
 
 ![MicroSD Card Adapter4](https://github.com/yanataka60/PC-8001_SD/blob/main/JPEG/MicroSD%20Card%20Adapter(4).JPG)
 
-### その他必要なもの
-　カートリッジスロットへの抜き差しに基板のみでは非常に不便です。
-
-　STLフォルダに基板を載せられるトレイの3Dデータを置いたので出力して使うと便利です。
-
 ## ROMへの書込み
 　Z80フォルダ内のEXT_ROM.binをROMライター(TL866II Plus等)を使って2764又は28C64に書き込みます。
 
 ## Arduinoプログラム
-　Arduino IDEを使ってArduinoフォルダのPC-8001_SDフォルダ内PC-8001_SD.inoを書き込みます。
+　Arduino IDEを使ってArduinoフォルダのPC-6001mk2_SDフォルダ内PC-6001mk2_SD.inoを書き込みます。
 
 　SdFatライブラリを使用しているのでArduino IDEメニューのライブラリの管理からライブラリマネージャを立ち上げて「SdFat」をインストールしてください。
 
 　「SdFat」で検索すれば見つかります。「SdFat」と「SdFat - Adafruit Fork」が見つかりますが「SdFat」のほうを使っています。
 
-注)Arduinoを基板に直付けしている場合、Arduinoプログラムを書き込むときは、PC-8001本体とは接続を外し、74LS04を外したうえで書き込んでください。
+注)Arduinoを基板に直付けしている場合、Arduinoプログラムを書き込むときは、カートリッジスロットから抜き、74LS04を外したうえで書き込んでください。
 
 ## 接続
 　カートリッジスロットに挿入します。
+
+　カートリッジスロットへの抜き差しに基板のみでは非常に不便です。
+
+　STLフォルダに基板を載せられるトレイの3Dデータを置いたので出力して使うと便利です。
 
 ## SD-CARD
 　FAT16又はFAT32が認識できます。
@@ -143,8 +142,8 @@ B[CR]と動作は同じです。
 
 　選択したファイルが「CAS」形式の場合、「Mode?(1-4)」と聞いてくるのでモードを入力、次に「How Many Pages?(1-4)」と聞いてくるので画面数Eを入力、最後に「Auto Run?(y/n)」と聞いてくるので「y」とすれば起動直後にCLOAD[CR]RUN[CR]が実行され、「n」とすればCLOAD[CR]だけが実行されます。
 
-## 操作上の注意
-　「SD-CARD INITIALIZE ERROR」と表示されたときは、SD-CARDが挿入されているか確認し、PC-8001本体をリセットしてください。Arduinoのみのリセットでは復旧しません。
+#### 操作上の注意
+　「SD-CARD INITIALIZE ERROR」と表示されたときは、SD-CARDが挿入されているか確認し、PC-6001mk2本体をリセットしてください。Arduinoのみのリセットでは復旧しません。
 
 　SD-CARDにアクセスしていない時に電源が入ったままで SD-CARDを抜いた後、再挿入しSD-CARDにアクセスすると「SD-CARD INITIALIZE ERROR」となる場合があります。再挿入した場合にはSD-CARDにアクセスする前にArduinoを必ずリセットしてください。
 
