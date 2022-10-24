@@ -76,6 +76,12 @@
 
 　STLフォルダに基板を載せられるトレイの3Dデータを置いたので出力して使うと便利です。
 
+![Tray](https://github.com/yanataka60/PC-6001mk2_SD/blob/main/JPEG/TRAY.JPG)
+
+　PC-6601、PC-6601SRはドライブ数切替スイッチは0として使ってください。
+
+![Drive](https://github.com/yanataka60/PC-6001mk2_SD/blob/main/JPEG/DRIVE.JPG)
+
 ## SD-CARD
 　FAT16又はFAT32が認識できます。
 
