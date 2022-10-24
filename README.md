@@ -43,7 +43,8 @@
 
 　　　注3)Arduino Pro MiniはA4、A5ピンも使っています。
 
-　　　注4)MicroSD Card Adapterを使う
+　　　注4)MicroSD Card Adapterを使う場合
+
 　　　　　J3に取り付けます。
 
 　　　　　MicroSD Card Adapterについているピンヘッダを除去してハンダ付けするのが一番確実ですが、J3の穴にMicroSD Card Adapterをぴったりと押しつけ、裏から多めにハンダを流し込むことでハンダ付けをする方法もあります。なお、この方法の時にはしっかりハンダ付けが出来たかテスターで導通を確認しておいた方が安心です。
