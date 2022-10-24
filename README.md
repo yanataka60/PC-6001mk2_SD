@@ -6,9 +6,11 @@
 
 　対応機種は、PC-6001mk2、PC-6001mk2SR、PC-6601、PC-6601SRです。PC-6601、PC-6601SRはドライブ数切替スイッチは0として使ってください。
 
-　対応しているCMT形式は、P6T形式とCAS形式です。P6形式はCAS形式と同じですので拡張子をCASにすれば使えます。
+　対応しているCMT形式は、P6T形式とCAS形式(P6形式)です。P6形式は拡張子をCASにすれば使えます。
 
 　裏RAMを使用してSD-CARDへのアクセスを実現しているので残念ですが、MODE5、MODE6ではSD-CARDを使えません。
+
+　また、同様の理由から初代PC-6001でも使えません。
 
 　CMTからの読み込み実行に数分掛かっていたゲームも数十秒で実行できます。
 
@@ -17,9 +19,9 @@
 ## 回路図
 　KiCadフォルダ内のPC-6001mk2_SD.pdfを参照してください。
 
-[回路図](https://github.com/yanataka60/PC-8001_SD/blob/main/Kicad/PC-8001_SD.pdf)
+[回路図](https://github.com/yanataka60/PC-6001mk2_SD/blob/main/Kicad/PC-6001_mk2_SD.pdf)
 
-![PC-6001mk2_SD](https://github.com/yanataka60/PC-8001_SD/blob/main/Kicad/PC-8001_SD.jpg)
+![PC-6001mk2_SD](https://github.com/yanataka60/PC-6001mk2_SD/blob/main/Kicad/PC-6001_mk2_SD_1.jpg)
 
 ## 部品
 |番号|品名|数量|備考|
