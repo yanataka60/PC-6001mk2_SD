@@ -1,6 +1,6 @@
 # PC-6001mk2 MODE1～MODE4にSD-CARDからロード、セーブ機能
 
-![PC-6001mk2_SD](https://github.com/yanataka60/PC-8001_SD/blob/main/JPEG/TITLE.jpg)
+![PC-6001mk2_SD](https://github.com/yanataka60/PC-6001mk2_SD/blob/main/JPEG/TITLE.jpg)
 
 　PC-6001mk2の MODE1～MODE4でSD-CARDからロード、セーブ機能を実現するものです。
 
