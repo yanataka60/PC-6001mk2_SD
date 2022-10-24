@@ -74,7 +74,7 @@
 
 ![cartridge](https://github.com/yanataka60/PC-6001mk2_SD/blob/main/JPEG/cartridge.jpg)
 
-　カートリッジスロットへの抜き差しに基板のみでは非常に不便です。
+　カートリッジスロットへの抜き差しに基板のみでは不便です。
 
 　STLフォルダに基板を載せられるトレイの3Dデータを置いたので出力して使うと便利です。
 
