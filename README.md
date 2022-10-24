@@ -1,6 +1,6 @@
 # PC-6001mk2 MODE1～MODE4にSD-CARDからロード、セーブ機能
 
-![PC-6001mk2_SD](https://github.com/yanataka60/PC-6001mk2_SD/blob/main/JPEG/TITLE.jpg)
+![TITLE](https://github.com/yanataka60/PC-6001mk2_SD/blob/main/JPEG/TITLE.jpg)
 
 　PC-6001mk2の MODE1～MODE4でSD-CARDからロード、セーブ機能を実現するものです。
 
@@ -15,6 +15,8 @@
 　CMTからの読み込み実行に数分掛かっていたゲームも数十秒で実行できます。
 
 　なお、Arduino、ROMへ書き込むための機器が別途必要となります。
+
+![PC-6001mk2_SD](https://github.com/yanataka60/PC-6001mk2_SD/blob/main/JPEG/PC-6001mk2_SD.JPG)
 
 ## 回路図
 　KiCadフォルダ内のPC-6001mk2_SD.pdfを参照してください。
