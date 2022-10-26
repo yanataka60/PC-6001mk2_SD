@@ -1,3 +1,5 @@
+;2022.10.26 FコマンドにもDI追加。
+
 AZLCNV		EQU		0BEFH			;小文字->大文字変換
 CONOUT		EQU		1075H			;CRTへの1バイト出力
 MSGOUT		EQU		30CFH			;文字列の出力
@@ -253,7 +255,7 @@ F2CHK:	IN		A,(PPI_C)
 
 ;************ Fコマンド DIRLIST **********************
 STLT:
-;		DI
+		DI
 		INC		HL
 		CALL	STFN				;検索文字列を送信
 		EX		DE,HL
