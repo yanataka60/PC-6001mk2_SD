@@ -12,14 +12,14 @@
 
 　なお、Arduino、ROMへ書き込むための機器が別途必要となります。
 
+![PC-6001mk2_SD](https://github.com/yanataka60/PC-6001mk2_SD/blob/main/JPEG/PC-6001mk2_SD.JPG)
+
 ## 対応できないもの
 　BASIC-ROMを裏RAMにコピーしCMT関連ルーチンをSD-CARDアクセスに書き換えてSD-CARDへのアクセスを実現していますので残念ですが、MODE5、MODE6ではSD-CARDを使えません。
 
 　同様の理由から裏RAMを持っていない初代PC-6001でも使えません。
 
 　また、BASIC-ROMのCMT関連ルーチンをコールせず独自にCMTからLOADするソフト（ロードランナー等）も対応できないので途中で止まります。
-
-![PC-6001mk2_SD](https://github.com/yanataka60/PC-6001mk2_SD/blob/main/JPEG/PC-6001mk2_SD.JPG)
 
 ## 回路図
 　KiCadフォルダ内のPC-6001mk2_SD.pdfを参照してください。
@@ -204,3 +204,5 @@ BASICプログラムを指定したDOSフィル名でSD-CARDに上書きSAVEし�
 
 　　https://github.com/kuninet/PC-8001-SD-8kRAM
 
+## 追記
+　2022.10.26 SD-CARDに対応できないハード、ソフトについて加筆しました。
