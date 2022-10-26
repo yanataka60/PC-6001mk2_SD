@@ -8,13 +8,16 @@
 
 　対応しているCMT形式は、P6T形式とCAS形式(P6形式)です。P6形式は拡張子をCASにすれば使えます。
 
-　裏RAMを使用してSD-CARDへのアクセスを実現しているので残念ですが、MODE5、MODE6ではSD-CARDを使えません。
-
-　また、同様の理由から初代PC-6001でも使えません。
-
 　CMTからの読み込み実行に数分掛かっていたゲームも数十秒で実行できます。
 
 　なお、Arduino、ROMへ書き込むための機器が別途必要となります。
+
+## 対応できないもの
+　BASIC-ROMを裏RAMにコピーしCMT関連ルーチンをSD-CARDアクセスに書き換えてSD-CARDへのアクセスを実現していますので残念ですが、MODE5、MODE6ではSD-CARDを使えません。
+
+　同様の理由から裏RAMを持っていない初代PC-6001でも使えません。
+
+　また、BASIC-ROMのCMT関連ルーチンをコールせず独自にCMTからLOADするソフト（ロードランナー等）も対応できないので途中で止まります。
 
 ![PC-6001mk2_SD](https://github.com/yanataka60/PC-6001mk2_SD/blob/main/JPEG/PC-6001mk2_SD.JPG)
 
