@@ -1,4 +1,6 @@
 			  Z80 ASSEMBLER - ZASM VER 1.6
+                      	;2022.10.26 FコマンドにもDI追加。
+                      	
   0BEF                	AZLCNV		EQU		0BEFH			;小文字->大文字変換
   1075                	CONOUT		EQU		1075H			;CRTへの1バイト出力
   30CF                	MSGOUT		EQU		30CFH			;文字列の出力
