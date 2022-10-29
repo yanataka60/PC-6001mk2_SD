@@ -1,4 +1,5 @@
-//
+//2022.10.28 CMTload終了処理にCMTsave終了エントリをCallしているソフトへの対策にsave_flg追加。
+
 #include "SdFat.h"
 #include <SPI.h>
 SdFat SD;
@@ -12,7 +13,7 @@ char new_name[40];
 char as_str[80];
 File file;
 unsigned int s_adrs,e_adrs,w_length,w_len1,w_len2,s_adrs1,s_adrs2,b_length,b_mode,b_page,as_len;
-boolean eflg,basic_d3;
+boolean eflg,basic_d3,save_flg;
 
 #define CABLESELECTPIN  (10)
 #define CHKPIN          (15)
@@ -210,6 +211,8 @@ void P6_load(void){
 //f_length設定、r_count初期化
       f_length = file.size();
       r_count = 0;
+//2022.10.28 CMTload終了処理にCMTsave終了エントリをCallしているソフトへの対策にsave_flg追加。
+      save_flg=false;
 //状態コード送信(OK)
       snd1byte(0x00);
       flg = true;
@@ -245,6 +248,8 @@ void cmt_load(void){
 //f_length設定、r_count初期化
         f_length = file.size();
         r_count = 0;
+//2022.10.28 CMTload終了処理にCMTsave終了エントリをCallしているソフトへの対策にsave_flg追加。
+        save_flg=false;
 //状態コード送信(OK)
         snd1byte(0x00);
         flg = true;
@@ -431,6 +436,14 @@ void load1byte(void){
   int rdata = file.read();
   r_count++;
   snd1byte(rdata);
+
+////  Serial.print("f_length:");
+////  Serial.print(f_length);
+////  Serial.print(" r_count:");
+////  Serial.print(r_count);
+////  Serial.print(" rdata:");
+////  Serial.println(rdata,HEX);
+
 //ファイルエンドまで達していればFILE CLOSE
   if (f_length == r_count){
     file.close();
@@ -560,6 +573,8 @@ void bas_save_ini(void){
     if( true == file ){
       s_count=0;
       basic_d3=false;
+//2022.10.28 CMTload終了処理にCMTsave終了エントリをCallしているソフトへの対策にsave_flg追加。
+      save_flg=true;
 //状態コード送信(OK)
       snd1byte(0x00);
     } else {
@@ -591,7 +606,10 @@ void save1byte(void){
 
 //BASICプログラムのSAVE終了処理
 void bas_save_end(void){
-  file.close();
+//2022.10.28 CMTload終了処理にCMTsave終了エントリをCallしているソフトへの対策にsave_flg追加。save_flgがtrueの時だけファイルクローズ。
+  if (save_flg == true){
+    file.close();
+  }
 }
 
 //BASICプログラムのLOAD処理
@@ -612,6 +630,8 @@ void bas_load(void){
 //f_length設定、r_count初期化
         f_length = file.size();
         r_count = 0;
+//2022.10.28 CMTload終了処理にCMTsave終了エントリをCallしているソフトへの対策にsave_flg追加。
+        save_flg=false;
 //状態コード送信(OK)
         snd1byte(0x00);
         flg = true;
@@ -755,6 +775,23 @@ void loop()
 //状態コード送信(OK)
         snd1byte(0x00);
         load1byte();
+        break;
+//65h:PC-6001 LOAD ONE BYTE FROM CMT(MODE5)
+      case 0x65:
+////    Serial.println("LOAD 1BYTE START");
+  delay(1);
+//状態コード送信(OK)
+        snd1byte(0x00);
+        load1byte();
+        break;
+//66h:PC-6001 BASIC 1Byte 受信(MODE5)
+      case 0x66:
+////    Serial.println("BASIC SAVE 1 Byte");
+  delay(1);
+//状態コード送信(OK)
+        snd1byte(0x00);
+        save1byte();
+////  delay(1500);
         break;
 //67h:PC-6001 BASIC SAVE開始
       case 0x67:
