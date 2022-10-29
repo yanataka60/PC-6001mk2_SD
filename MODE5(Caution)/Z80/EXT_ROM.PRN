@@ -1,5 +1,6 @@
 			  Z80 ASSEMBLER - ZASM VER 1.6
                       	;2022.10.26 FコマンドにもDI追加。
+                      	;2022.10.29 MSG_F8からMODE5の文字を削除。
                       	
   0BEF                	AZLCNV		EQU		0BEFH			;小文字->大文字変換
   1075                	CONOUT		EQU		1075H			;CRTへの1バイト出力
@@ -61,11 +62,11 @@
                       	
   6002  1360          			DW		INIT				;POWER ONで8255を初期化、Luncher起動
                       			
-  6004  C30367        			JP		LOADINI
+  6004  C3FD66        			JP		LOADINI
   6007  C3E163        			JP		LOAD1BYTE
-  600A  C3CA66        			JP		SAVEINI
-  600D  C3EB66        			JP		SAVE1BYTE
-  6010  C3FD66        			JP		SAVEEND
+  600A  C3C466        			JP		SAVEINI
+  600D  C3E566        			JP		SAVE1BYTE
+  6010  C3F766        			JP		SAVEEND
                       	
                       	;**** 8255初期化 ****
                       	;PORTC下位BITをOUTPUT、上位BITをINPUT、PORTBをINPUT、PORTAをOUTPUT
@@ -189,7 +190,7 @@
                       	
   60FA  3EC3          	SDCHG3:	LD		A,0C3H				;その他SD対応パッチあて
   60FC  32611A        			LD		(1A61H),A
-  60FF  210367        			LD		HL,LOADINI
+  60FF  21FD66        			LD		HL,LOADINI
   6102  22621A        			LD		(1A62H),HL
   6105  3EC3          			LD		A,0C3H
   6107  32701A        			LD		(1A70H),A
@@ -197,15 +198,15 @@
   610D  22711A        			LD		(1A71H),HL
   6110  3EC3          			LD		A,0C3H
   6112  32B81A        			LD		(1AB8H),A
-  6115  21CA66        			LD		HL,SAVEINI
+  6115  21C466        			LD		HL,SAVEINI
   6118  22B91A        			LD		(1AB9H),HL
   611B  3EC3          			LD		A,0C3H
   611D  32CC1A        			LD		(1ACCH),A
-  6120  21EB66        			LD		HL,SAVE1BYTE
+  6120  21E566        			LD		HL,SAVE1BYTE
   6123  22CD1A        			LD		(1ACDH),HL
   6126  3EC3          			LD		A,0C3H
   6128  32061B        			LD		(1B06H),A
-  612B  21FD66        			LD		HL,SAVEEND
+  612B  21F766        			LD		HL,SAVEEND
   612E  22071B        			LD		(1B07H),HL
   6131  C9            			RET
                       	
@@ -345,7 +346,7 @@
   620B  182A          			JR		DLRET
                       	
   620D  E5            	DL5:	PUSH	HL
-  620E  219866        			LD		HL,MSG_KEY1			;HIT ANT KEY表示
+  620E  219266        			LD		HL,MSG_KEY1			;HIT ANT KEY表示
   6211  CDCF30        			CALL	MSGOUT
   6214  CD3927        			CALL	MONCLF
   6217  E1            			POP		HL
@@ -387,7 +388,7 @@
   6257  CD5361        	ML0:	CALL	RCVBYTE				;MODE受信
   625A  A7            			AND		A
   625B  2009          			JR		NZ,ML00
-  625D  217D66        			LD		HL,MSG_F9			;MODE0は異常値
+  625D  217766        			LD		HL,MSG_F9			;MODE0は異常値
   6260  CDCF30        			CALL	MSGOUT
   6263  C32260        			JP		CMD1
                       	
@@ -703,10 +704,10 @@
   64AE  180F          			JR		ERRMSG
   64B0  FEF6          	ERR5:	CP		0F6H
   64B2  2005          			JR		NZ,ERR99
-  64B4  21B866        			LD		HL,MSG_FNAME		;PARAMETER FAILED
+  64B4  21B266        			LD		HL,MSG_FNAME		;PARAMETER FAILED
   64B7  1806          			JR		ERRMSG
   64B9  CD7A39        	ERR99:	CALL	MONBHX
-  64BC  219166        			LD		HL,MSG99			;その他ERROR
+  64BC  218B66        			LD		HL,MSG99			;その他ERROR
   64BF  CDCF30        	ERRMSG:	CALL	MSGOUT
   64C2  CD3927        			CALL	MONCLF
   64C5  CDCD1B        			CALL	DISPBL
@@ -765,86 +766,86 @@
   6660  0D0A00        			DB		0DH,0AH,00H
                       			
   6663                	MSG_F8:
-  6663  4D4F444535204D			DB		'MODE5 MODE6 NOT EXECUTE'
-  667A  0D0A00        			DB		0DH,0AH,00H
+  6663  4D4F444536204E			DB		'MODE6 NOT EXECUTE'
+  6674  0D0A00        			DB		0DH,0AH,00H
                       			
-  667D                	MSG_F9:
-  667D  4D4F444530204E			DB		'MODE0 NOT EXECUTE'
-  668E  0D0A00        			DB		0DH,0AH,00H
+  6677                	MSG_F9:
+  6677  4D4F444530204E			DB		'MODE0 NOT EXECUTE'
+  6688  0D0A00        			DB		0DH,0AH,00H
                       			
-  6691                	MSG99:
-  6691  204552524F52  			DB		' ERROR'
-  6697  00            			DB		00H
-                      			
-                      	
-  6698                	MSG_KEY1:
-  6698  4E4558543A414E			DB		'NEXT:ANY BACK:B BREAK:UP OR ESC'
-  66B7  00            			DB		00H
-                      	
-  66B8                	MSG_FNAME:
-  66B8  504152414D4554			DB		'PARAMETAR FAILED!'
-  66C9  00            			DB		00H
+  668B                	MSG99:
+  668B  204552524F52  			DB		' ERROR'
+  6691  00            			DB		00H
                       			
                       	
-  66CA                	SAVEINI:
-  66CA  F3            			DI
-  66CB  212363        			LD		HL,MS_SAVE
-  66CE  CDCF30        			CALL	MSGOUT
-  66D1  CD3927        			CALL	MONCLF
-  66D4  AF            			XOR		A
-  66D5  32D1FE        			LD		(FNAME+6),A
-  66D8  21CAFE        			LD		HL,FNAME-1
-  66DB  3E67          			LD		A,67H				;コマンド67Hを送信
-  66DD  CD1D64        			CALL	STCMD
-  66E0  2003          			JR		NZ,SINI1
-  66E2  AF            			XOR		A
-  66E3  1802          			JR		SINI2
-  66E5  3E03          	SINI1:	LD		A,03H
-  66E7  3218FA        	SINI2:	LD		(STOPFLG),A
+  6692                	MSG_KEY1:
+  6692  4E4558543A414E			DB		'NEXT:ANY BACK:B BREAK:UP OR ESC'
+  66B1  00            			DB		00H
+                      	
+  66B2                	MSG_FNAME:
+  66B2  504152414D4554			DB		'PARAMETAR FAILED!'
+  66C3  00            			DB		00H
+                      			
+                      	
+  66C4                	SAVEINI:
+  66C4  F3            			DI
+  66C5  212363        			LD		HL,MS_SAVE
+  66C8  CDCF30        			CALL	MSGOUT
+  66CB  CD3927        			CALL	MONCLF
+  66CE  AF            			XOR		A
+  66CF  32D1FE        			LD		(FNAME+6),A
+  66D2  21CAFE        			LD		HL,FNAME-1
+  66D5  3E67          			LD		A,67H				;コマンド67Hを送信
+  66D7  CD1D64        			CALL	STCMD
+  66DA  2003          			JR		NZ,SINI1
+  66DC  AF            			XOR		A
+  66DD  1802          			JR		SINI2
+  66DF  3E03          	SINI1:	LD		A,03H
+  66E1  3218FA        	SINI2:	LD		(STOPFLG),A
                       	;		EI
-  66EA  C9            			RET
+  66E4  C9            			RET
                       	
-  66EB                	SAVE1BYTE:
-  66EB  F3            			DI
-  66EC  C5            			PUSH	BC
-  66ED  D5            			PUSH	DE
-  66EE  E5            			PUSH	HL
-  66EF  F5            			PUSH	AF
-  66F0  3E68          			LD		A,68H				;SAVE1BYTE コマンド68Hを送信
-  66F2  CD1664        			CALL	STCD
-  66F5  F1            			POP		AF
-  66F6  CD6661        			CALL	SNDBYTE				;1Byteのみ受信
-  66F9  E1            			POP		HL
-  66FA  D1            			POP		DE
-  66FB  C1            			POP		BC
+  66E5                	SAVE1BYTE:
+  66E5  F3            			DI
+  66E6  C5            			PUSH	BC
+  66E7  D5            			PUSH	DE
+  66E8  E5            			PUSH	HL
+  66E9  F5            			PUSH	AF
+  66EA  3E68          			LD		A,68H				;SAVE1BYTE コマンド68Hを送信
+  66EC  CD1664        			CALL	STCD
+  66EF  F1            			POP		AF
+  66F0  CD6661        			CALL	SNDBYTE				;1Byteのみ受信
+  66F3  E1            			POP		HL
+  66F4  D1            			POP		DE
+  66F5  C1            			POP		BC
                       	;		EI
+  66F6  C9            			RET
+                      	
+  66F7                	SAVEEND:
+  66F7  3E69          			LD		A,69H
+  66F9  CD1664        			CALL	STCD
   66FC  C9            			RET
                       	
-  66FD                	SAVEEND:
-  66FD  3E69          			LD		A,69H
-  66FF  CD1664        			CALL	STCD
-  6702  C9            			RET
-                      	
-  6703                	LOADINI:
-  6703  F3            			DI
-  6704  AF            			XOR		A
-  6705  32D1FE        			LD		(FNAME+6),A
-  6708  21CBFE        			LD		HL,FNAME
-  670B  7E            			LD		A,(HL)
-  670C  A7            			AND		A
-  670D  C8            			RET		Z
-  670E  2B            			DEC		HL
-  670F  3E63          			LD		A,63H				;コマンド63Hを送信
-  6711  CD1D64        			CALL	STCMD
-  6714  2003          			JR		NZ,LINI1
-  6716  AF            			XOR		A
-  6717  1802          			JR		LINI2
-  6719  3E03          	LINI1:	LD		A,03H
-  671B  3218FA        	LINI2:	LD		(STOPFLG),A
-  671E  AF            			XOR		A
-  671F  32CBFE        			LD		(FNAME),A
+  66FD                	LOADINI:
+  66FD  F3            			DI
+  66FE  AF            			XOR		A
+  66FF  32D1FE        			LD		(FNAME+6),A
+  6702  21CBFE        			LD		HL,FNAME
+  6705  7E            			LD		A,(HL)
+  6706  A7            			AND		A
+  6707  C8            			RET		Z
+  6708  2B            			DEC		HL
+  6709  3E63          			LD		A,63H				;コマンド63Hを送信
+  670B  CD1D64        			CALL	STCMD
+  670E  2003          			JR		NZ,LINI1
+  6710  AF            			XOR		A
+  6711  1802          			JR		LINI2
+  6713  3E03          	LINI1:	LD		A,03H
+  6715  3218FA        	LINI2:	LD		(STOPFLG),A
+  6718  AF            			XOR		A
+  6719  32CBFE        			LD		(FNAME),A
                       	;		EI
-  6722  C9            			RET
+  671C  C9            			RET
                       	
-  6723                			END
+  671D                			END
 

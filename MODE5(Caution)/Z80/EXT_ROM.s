@@ -1,4 +1,5 @@
 ;2022.10.26 FコマンドにもDI追加。
+;2022.10.29 MSG_F8からMODE5の文字を削除。
 
 AZLCNV		EQU		0BEFH			;小文字->大文字変換
 CONOUT		EQU		1075H			;CRTへの1バイト出力
@@ -764,7 +765,7 @@ MSG_F7:
 		DB		0DH,0AH,00H
 		
 MSG_F8:
-		DB		'MODE5 MODE6 NOT EXECUTE'
+		DB		'MODE6 NOT EXECUTE'
 		DB		0DH,0AH,00H
 		
 MSG_F9:
