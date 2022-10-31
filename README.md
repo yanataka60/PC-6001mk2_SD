@@ -17,11 +17,11 @@
 ![PC-6001mk2_SD](https://github.com/yanataka60/PC-6001mk2_SD/blob/main/JPEG/PC-6001mk2_SD.JPG)
 
 ## 対応できないもの
-　BASIC-ROMを裏RAMにコピーしCMT関連ルーチンをSD-CARDアクセスに書き換えてSD-CARDへのアクセスを実現していますので残念ですが、MODE5、MODE6ではSD-CARDを使えません。
+　MODE1～MODE4については、BASIC-ROMを裏RAMにコピーしCMT関連ルーチンをSD-CARDアクセスに書き換えてSD-CARDへのアクセスを実現しています。
 
-　同様の理由から裏RAMを持っていない初代PC-6001でも使えません。
+　MODE5についてはBASIC-ROMのCMT関連ルーチンにパッチを当てたROMに差し替えることでSD-CARDへのアクセスを実現していますが、MODE6についてはBASIC-ROMのCMT関連ルーチンが特定できていないためSD-CARDは使えません。
 
-　また、BASIC-ROMのCMT関連ルーチンをコールせず独自にCMTからLOADするソフト（ロードランナー等）も対応できないので途中で止まります。
+　また、BASIC-ROMのCMT関連ルーチンをコールせず独自ルーチンによりCMTからLOADするソフト（ロードランナー等）も対応できないので途中で止まります。
 
 ## 回路図
 　KiCadフォルダ内のPC-6001mk2_SD.pdfを参照してください。
