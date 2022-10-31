@@ -1,21 +1,23 @@
 ;2022.10.26 FコマンドにもDI追加。
+;2022.10.29 MSG_F8からMODE5の文字を削除。
+;2022.10.31 MODE1～MODE4、MODE5を統合
 
 AZLCNV		EQU		0BEFH			;小文字->大文字変換
-CONOUT		EQU		1075H			;CRTへの1バイト出力
-MSGOUT		EQU		30CFH			;文字列の出力
-LINPUT		EQU		28F9H			;スクリーン・エディタ
-TBLOAD		EQU		0FAA7H			;LOADコマンドジャンプアドレス
-TBSAVE		EQU		0FAA9H			;SAVEコマンドジャンプアドレス
-TBLLIST		EQU		0FA91H			;LLISTコマンドジャンプアドレス
-LBUF		EQU		0FBB9H
-MONCLF		EQU		2739H			;CRコード及びLFコードの表示
 KYSCAN		EQU		0FBCH			;リアルタイム・キーボード・スキャニング
-MONBHX		EQU		397AH			;Aレジスタの内容を10進数として表示
-DISPBL		EQU		1BCDH			;ベルコードの出力
-FUNC8		EQU		0FB75H			;F8 KEY 定義領域
 KEYIN		EQU		0FC4H			;1文字入力
+CONOUT		EQU		1075H			;CRTへの1バイト出力
+DISPBL		EQU		1BCDH			;ベルコードの出力
+MONCLF		EQU		2739H			;CRコード及びLFコードの表示
+LINPUT		EQU		28F9H			;スクリーン・エディタ
+MSGOUT		EQU		30CFH			;文字列の出力
+MONBHX		EQU		397AH			;Aレジスタの内容を10進数として表示
 STOPFLG		EQU		0FA18H			;STOP ESC KEY FLG
+ASTRLEN		EQU		0FA32H			;自動実行文字列数
+FUNC8		EQU		0FB75H			;F8 KEY 定義領域
+ASTRSTRG	EQU		0FB8DH			;自動実行文字列格納場所
+LBUF		EQU		0FBB9H			;行バッファ及び自動実行文字列格納先
 FNAME		EQU		0FECBH			;CMT FILE NAME
+MODEFLG		EQU		0FF4EH			;MODE設定WORK
 
 
 ;PC-6001
@@ -102,8 +104,15 @@ CMD2:
 		JP		Z,STLT				;Fコマンド
 		CP		'L'
 		JP		Z,MONLOAD			;Lコマンド
+		LD		B,A
+		LD		A,(1A61H)			;ROMが修正されていればMODE5対応
+		CP		0C3H
+		JR		NZ,CMD3
+		LD		A,B
+		CP		'5'					;ROMが修正されていればMODE5対応
+		JR		Z,BRET
 
-		LD		HL,MSG_CMD1
+CMD3:	LD		HL,MSG_CMD1
 		CALL	MSGOUT				;コマンドエラー9行分出力
 		LD		HL,MSG_CMD2
 		CALL	MSGOUT
@@ -117,15 +126,20 @@ CMD2:
 		CALL	MSGOUT
 		LD		HL,MSG_CMD7
 		CALL	MSGOUT
+		LD		A,(1A61H)			;ROMが修正されていればMODE5対応
+		CP		0C3H
+		JR		NZ,CMD4
 		LD		HL,MSG_CMD8
 		CALL	MSGOUT
-		LD		HL,MSG_CMD9
+CMD4:	LD		HL,MSG_CMD9
 		CALL	MSGOUT
-		JR		CMD1
+		LD		HL,MSG_CMDA
+		CALL	MSGOUT
+		JP		CMD1
 
 BRET:
 		SUB		31H
-		LD		(0FF4EH),A			;MODE設定
+		LD		(MODEFLG),A			;MODE設定
 		PUSH	AF
 
 BRET2:	CALL	MONCLF
@@ -139,7 +153,7 @@ BRET2:	CALL	MONCLF
 		JR		NC,BRET2
 
 		LD		HL,LBUF				;AUTOSTART文字列格納場所
-		LD		(0FB8DH),HL
+		LD		(ASTRSTRG),HL
 		LD		(HL),A				;PAGE書き込み
 		CALL	MONCLF
 		INC		HL
@@ -148,7 +162,7 @@ BRET2:	CALL	MONCLF
 		INC		HL
 
 		LD		A,15				;AUTOSTART文字列数
-		LD		(0FA32H),A
+		LD		(ASTRLEN),A
 
 		POP		AF
 		LD		B,13
@@ -156,7 +170,16 @@ BRET2:	CALL	MONCLF
 		JR		NC,BRET3
 		LD		DE,MODE12
 		JR		BRET4
-BRET3:	LD		DE,MODE34			;MODE3 MODE4
+BRET3:
+		CP		04H					;MODE3 MODE4
+		JR		NC,BRET31
+		LD		DE,MODE34
+		JR		BRET4
+BRET31:
+		LD		A,2				;AUTOSTART文字列数
+		LD		(ASTRLEN),A
+		RET
+		
 BRET4:	LD		A,(DE)
 		LD		(HL),A
 		INC		HL
@@ -377,16 +400,35 @@ ML0:	CALL	RCVBYTE				;MODE受信
 		CALL	MSGOUT
 		JP		CMD1
 
-ML00:	CP		05H
+ML00:	LD		B,A
+		LD		A,(1A61H)			;ROMが修正されていればMODE5対応
+		CP		0C3H
+		LD		A,B
+		JR		NZ,ML01
+		CP		06H
 		JR		C,ML1
-		LD		HL,MSG_F8			;MODE5以上は実行不可
+		LD		HL,MSG_F8			;MODE6以上は実行不可
 		CALL	MSGOUT
 		JP		CMD1
+ML01:
+		CP		05H
+		JR		C,ML1
+		LD		HL,MSG_F81			;MODE5以上は実行不可
+		CALL	MSGOUT
+;p6t情報は送られてきてしまうため空読み
+		CALL	RCVBYTE				;PAGE受信
+		CALL	RCVBYTE				;p6tファイル中のオートスタート文字列数受信
+		LD		B,A
+		AND		A					;p6tファイル中のオートスタート文字列が無いならスキップ
+		JR		Z,ML02
+ML03:	CALL	RCVBYTE				;オートスタート文字列受信
+		DJNZ	ML03
+ML02:	JP		CMD1
 		
 ML1:	DEC		A
-		LD		(0FF4EH),A			;MODE書き込み
+		LD		(MODEFLG),A			;MODE書き込み
 		LD		HL,LBUF				;AUTOSTART文字列格納場所
-		LD		(0FB8DH),HL
+		LD		(ASTRSTRG),HL
 
 		PUSH	AF
 		CALL	RCVBYTE				;PAGE受信
@@ -403,18 +445,25 @@ ML1:	DEC		A
 		JR		NC,MD3
 		LD		DE,MODE12
 		JR		ML2
-MD3:	LD		DE,MODE34			;MODE3 MODE4
+MD3:
+		CP		04H					;MODE3 MODE4
+		JR		NC,MD31
+		LD		DE,MODE34			;MODE3 MODE4
+		JR		ML2
+
+MD31:	LD		DE,MODE5			;MODE5
+
 ML2:	LD		A,(DE)
 		LD		(HL),A
 		INC		HL
 		INC		DE
 		DJNZ	ML2
 
-		CALL	RCVBYTE				;p6tファイル中のオートスタート文字列数受信
+ML21:	CALL	RCVBYTE				;p6tファイル中のオートスタート文字列数受信
 		LD		B,A
 
 		ADD		A,15				;AUTOSTART文字列数
-		LD		(0FA32H),A
+		LD		(ASTRLEN),A
 
 		LD		A,B
 		AND		A					;p6tファイル中のオートスタート文字列が無いならスキップ
@@ -426,7 +475,11 @@ ML3:	CALL	RCVBYTE				;オートスタート文字列受信
 ML4:	LD		(HL),A
 		INC		HL
 		DJNZ	ML3
-ML5:	CALL	SDCHG1				;SD用パッチあてルーチンへ
+ML5:
+		LD		A,(MODEFLG)			;MODE5ならRAMへのコピー、RAMへのパッチあてはしない。
+		CP		04H
+		RET		NC
+		CALL	SDCHG1				;SD用パッチあてルーチンへ
 		JP		SDCHG3
 
 		
@@ -434,8 +487,12 @@ MODE12:
 		DB		'OUT&HF0,&H7D',0DH	;0000H～3FFFH:内部RAM 4000～7FFFH:外部ROM
 MODE34:
 		DB		'OUT&HF0,&HAD',0DH	;0000H～3FFFH:内部RAM 4000～5FFFH:BASIC 6000H～7FFFH:外部ROM
+MODE5:
+		DB		'            ',0DH	;NO OPARATION
 
 MS_MODE:
+		DB		'Mode?(1-5)',00H
+MS_MODE2:
 		DB		'Mode?(1-4)',00H
 PG_SEL:
 		DB		'How Many Pages?(1-4)',00H
@@ -455,18 +512,32 @@ P6LOAD:
 		LD		A,63H				;p6 LOAD コマンド63Hを送信
 		CALL	STCMD
 		JP		NZ,CMD1
-PL1:	CALL	MONCLF
+		LD		A,(1A61H)			;ROMが修正されていればMODE5対応
+		CP		0C3H
+		JR		NZ,PL11
+PL1:	CALL	MONCLF				;MODE5対応
 		LD		HL,MS_MODE			;MODE選択表示
+		CALL	MSGOUT
+		CALL	KEYIN				;1文字入力(1-5)
+		CALL	CONOUT
+		CP		'1'
+		JR		C,PL1
+		CP		'6'
+		JR		NC,PL1
+		JR		PL12
+		
+PL11:	CALL	MONCLF				;MODE5非対応
+		LD		HL,MS_MODE2			;MODE選択表示
 		CALL	MSGOUT
 		CALL	KEYIN				;1文字入力(1-4)
 		CALL	CONOUT
 		CP		'1'
-		JR		C,PL1
+		JR		C,PL11
 		CP		'5'
-		JR		NC,PL1
-		
-		SUB		31H
-		LD		(0FF4EH),A			;MODE書き込み
+		JR		NC,PL11
+
+PL12:	SUB		31H
+		LD		(MODEFLG),A			;MODE書き込み
 
 		PUSH	AF
 PL2:	CALL	MONCLF
@@ -480,7 +551,7 @@ PL2:	CALL	MONCLF
 		JR		NC,PL2
 
 		LD		HL,LBUF				;AUTOSTART文字列格納場所
-		LD		(0FB8DH),HL
+		LD		(ASTRSTRG),HL
 		LD		(HL),A				;PAGE書き込み
 		CALL	MONCLF
 		INC		HL
@@ -500,7 +571,7 @@ PL2:	CALL	MONCLF
 		LD		A,21				;AUTOSTART文字列数
 		JR		P68
 P67:	LD		A,25				;AUTOSTART文字列数
-P68:	LD		(0FA32H),A
+P68:	LD		(ASTRLEN),A
 
 		POP		AF
 		LD		B,13
@@ -508,14 +579,21 @@ P68:	LD		(0FA32H),A
 		JR		NC,P62
 		LD		DE,MODE12
 		JR		P63
-P62:	LD		DE,MODE34			;MODE3 MODE4
+P62:
+		CP		04H					;MODE3 MODE4
+		JR		NC,P631
+		LD		DE,MODE34			;MODE3 MODE4
+		JR		P63
+P631:
+		LD		DE,MODE5			;MODE5
+		
 P63:	LD		A,(DE)
 		LD		(HL),A
 		INC		HL
 		INC		DE
 		DJNZ	P63
 
-		LD		A,(0FA32H)
+		LD		A,(ASTRLEN)
 		CP		21
 		JR		Z,P66
 		LD		B,ATSTR_END-ATSTR
@@ -528,6 +606,9 @@ P65:	LD		A,(DE)
 		INC		HL
 		INC		DE
 		DJNZ	P65
+		LD		A,(MODEFLG)			;MODE5ならRAMへのコピー、RAMへのパッチあてはしない。
+		CP		04H
+		RET		NC
 		CALL	SDCHG1				;SD用パッチあてルーチンへ
 		JP		SDCHG3
 
@@ -697,8 +778,10 @@ MSG_CMD6:
 MSG_CMD7:
 		DB		' 4   : MODE 4 N60 EXT BASIC(SD)',0DH,0AH,00H
 MSG_CMD8:
-		DB		' F x : Find SD File',0DH,0AH,00H
+		DB		' 5   : MODE 5 N60m BASIC(SD)',0DH,0AH,00H
 MSG_CMD9:
+		DB		' F x : Find SD File',0DH,0AH,00H
+MSG_CMDA:
 		DB		' L x : Load From SD',0DH,0AH,00H
 
 MSG_F0:
@@ -730,6 +813,10 @@ MSG_F7:
 		DB		0DH,0AH,00H
 		
 MSG_F8:
+		DB		'MODE6 NOT EXECUTE'
+		DB		0DH,0AH,00H
+		
+MSG_F81:
 		DB		'MODE5 MODE6 NOT EXECUTE'
 		DB		0DH,0AH,00H
 		

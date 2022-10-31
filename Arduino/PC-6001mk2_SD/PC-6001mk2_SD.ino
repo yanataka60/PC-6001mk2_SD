@@ -1,5 +1,5 @@
 //2022.10.28 CMTload終了処理にCMTsave終了エントリをCallしているソフトへの対策にsave_flg追加。
-
+//2022.10.31 MODE5を許可
 #include "SdFat.h"
 #include <SPI.h>
 SdFat SD;
@@ -295,8 +295,8 @@ void p6t_v1(void){
   r_count++;
   snd1byte(b_mode);
 ////  Serial.println(b_mode,HEX);
-//// MODE1～MODE4の時だけ実行可
-  if(b_mode!=0 && b_mode!=5 && b_mode!=6){
+//// MODE1～MODE5の時だけ実行可
+  if(b_mode!=0 && b_mode!=6){
 //ページ数
     b_page = file.read();
     r_count++;
@@ -399,8 +399,8 @@ void p6t_v2(void){
     b_mode = file.read();
     snd1byte(b_mode);
 ////  Serial.println(b_mode,HEX);
-//// MODE1～MODE4の時だけ実行可
-    if(b_mode!=0 && b_mode!=5 && b_mode!=6){
+//// MODE1～MODE5の時だけ実行可
+    if(b_mode!=0 && b_mode!=6){
 //ページ数
       b_page = file.read();
       snd1byte(b_page);
