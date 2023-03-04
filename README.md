@@ -153,7 +153,7 @@ B[CR]と動作は同じです。
 
 　選択したファイルが「P6T」形式の場合、設定されたMODEと設定されたPagesで起動したうえで自動実行文字列を実行します。
 
-　選択したファイルが「CAS」形式の場合、「Mode?(1-4)」と聞いてくるのでモードを入力、次に「How Many Pages?(1-4)」と聞いてくるので画面数Eを入力、最後に「Auto Run?(y/n)」と聞いてくるので「y」とすれば起動直後にCLOAD[CR]RUN[CR]が実行され、「n」とすればCLOAD[CR]だけが実行されます。
+　選択したファイルが「CAS」形式の場合、「Mode?(1-4)」と聞いてくるのでモードを入力、次に「How Many Pages?(1-4)」と聞いてくるので画面数を入力、最後に「Auto Run?(y/c/n)」と聞いてくるので「y」とすれば起動直後にCLOAD[CR]RUN[CR]が実行され、「c」とすればCLOAD[CR]だけが実行、「n」とすれば何も実行されません。
 
 #### 操作上の注意
 　「SD-CARD INITIALIZE ERROR」と表示されたときは、SD-CARDが挿入されているか確認し、PC-6001mk2本体をリセットしてください。Arduinoのみのリセットでは復旧しません。
@@ -163,7 +163,7 @@ B[CR]と動作は同じです。
 　SD-CARDの抜き差しは電源を切った状態で行うほうがより確実です。
 
 ### BASICコマンド
-#### LOAD "DOSファイル名"[CR]
+#### CLOAD "DOSファイル名"[CR]
 指定したDOSフィル名のBASICプログラムをSD-CARDからLOADします。
 
 ファイル名は6文字以内で必須です。6文字以上入力された場合には7文字以降は無視されます。ファイル名を入力せずにCLOAD[CR]とすると暴走します。
@@ -174,13 +174,13 @@ B[CR]と動作は同じです。
 
 　例)
 
-　　LOAD "TEST" -> DOSファイル名「TEST.CAS」を読み込みます。
+　　CLOAD "TEST" -> DOSファイル名「TEST.CAS」を読み込みます。
 
-　　LOAD "TESTTEST" -> DOSファイル名「TESTTE.CAS」を読み込みます。
+　　CLOAD "TESTTEST" -> DOSファイル名「TESTTE.CAS」を読み込みます。
 
-　　LOAD "TEST.BAS.CMT" -> DOSファイル名「TEST.BA.CMT」を読み込みます。
+　　CLOAD "TEST.BAS.CMT" -> DOSファイル名「TEST.BA.CMT」を読み込みます。
 
-#### SAVE "DOSファイル名"[CR]
+#### CSAVE "DOSファイル名"[CR]
 BASICプログラムを指定したDOSフィル名でSD-CARDに上書きSAVEします。
 
 ファイル名は6文字以内で必須です。6文字以上入力された場合には7文字以降は無視されます。
@@ -191,9 +191,9 @@ BASICプログラムを指定したDOSフィル名でSD-CARDに上書きSAVEし�
 
 　例)
 
-　　SAVE "TEST" -> 「TEST.CAS」で保存される。
+　　CSAVE "TEST" -> 「TEST.CAS」で保存される。
 
-　　SAVE "TESTTEST" -> 「TESTTE.CAS」で保存される。
+　　CSAVE "TESTTEST" -> 「TESTTE.CAS」で保存される。
 
 ## MODE5対応について(本体BASIC-ROMの差し替えが必要です、自己責任でお願いします)
 　MODE5では裏RAMが使われるため、「BASIC-ROMを裏RAMにコピーしCMT関連ルーチンをSD-CARDアクセスに書き換え」が出来ませんのでSD-CARDアクセス用にパッチを当てたBASIC-ROMに差し替えることでMODE5に対応します。
@@ -265,4 +265,8 @@ BASICプログラムを指定したDOSフィル名でSD-CARDに上書きSAVEし�
 
 　　　　　　 BASIC-ROMを差し替えていなければ2764、Arduinoとも更新の必要なし。
 
-　2023.3.4 MODE5においてMONITOR Rコマンドが機能するためには、最初に何らかのBASICプログラムが必要であることを追記。
+　2023. 3. 4 MODE5においてMONITOR Rコマンドが機能するためには、最初に何らかのBASICプログラムが必要であることを追記。
+
+　　　　　　 AUTO STARTの選択肢をy/c/nとし、CLOADも実行しない選択を追加
+
+　　　　　　 CLOAD、CSAVEがLOAD、SAVEと誤表記されていたものを修正

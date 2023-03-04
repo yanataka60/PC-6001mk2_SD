@@ -1,6 +1,7 @@
 ;2022.10.26 FコマンドにもDI追加。
 ;2022.10.29 MSG_F8からMODE5の文字を削除。
 ;2022.10.31 MODE1～MODE4、MODE5を統合
+;2023. 3. 4 AUTO STARTの選択肢をy/c/nとし、CLOADも実行しない選択を追加
 
 AZLCNV		EQU		0BEFH			;小文字->大文字変換
 KYSCAN		EQU		0FBCH			;リアルタイム・キーボード・スキャニング
@@ -497,7 +498,7 @@ MS_MODE2:
 PG_SEL:
 		DB		'How Many Pages?(1-4)',00H
 AS_SEL:
-		DB		'Auto Run?(y/n)',00H
+		DB		'Auto Run?(y/c/n)',00H
 MS_SAVE
 		DB		'Saving ',00H
 ATSTR:
@@ -562,15 +563,19 @@ PL2:	CALL	MONCLF
 		PUSH	HL
 		LD		HL,AS_SEL			;AUTO START選択表示
 		CALL	MSGOUT
-		CALL	KEYIN				;Y:AUTO START Y以外:選択したファイルをセットしてBASIC起動 
+		CALL	KEYIN				;Y:AUTO START C:選択したファイルをセットしてBASIC起動後にCLOAD N:選択したファイルをセットしてBASIC起動 
 		CALL	AZLCNV
 		POP		HL
 		CALL	CONOUT
 		CP		'Y'
 		JR		Z,P67
-		LD		A,21				;AUTOSTART文字列数
+		CP		'C'
+		JR		Z,P671
+		LD		A,15				;N選択:AUTOSTART文字列数
 		JR		P68
-P67:	LD		A,25				;AUTOSTART文字列数
+P671:	LD		A,21				;C選択:AUTOSTART文字列数
+		JR		P68
+P67:	LD		A,25				;Y選択:AUTOSTART文字列数
 P68:	LD		(ASTRLEN),A
 
 		POP		AF
@@ -594,8 +599,11 @@ P63:	LD		A,(DE)
 		DJNZ	P63
 
 		LD		A,(ASTRLEN)
+
 		CP		21
 		JR		Z,P66
+		CP		15
+		JR		Z,P661
 		LD		B,ATSTR_END-ATSTR
 		LD		DE,ATSTR
 		JR		P65
@@ -606,7 +614,7 @@ P65:	LD		A,(DE)
 		INC		HL
 		INC		DE
 		DJNZ	P65
-		LD		A,(MODEFLG)			;MODE5ならRAMへのコピー、RAMへのパッチあてはしない。
+P661:	LD		A,(MODEFLG)			;MODE5ならRAMへのコピー、RAMへのパッチあてはしない。
 		CP		04H
 		RET		NC
 		CALL	SDCHG1				;SD用パッチあてルーチンへ
