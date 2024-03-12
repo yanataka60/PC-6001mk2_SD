@@ -1,5 +1,6 @@
 //2022.10.28 CMTload終了処理にCMTsave終了エントリをCallしているソフトへの対策にsave_flg追加。
 //2022.10.31 MODE5を許可
+//2024. 3.12 sd-card再挿入時の初期化処理を追加
 #include "SdFat.h"
 #include <SPI.h>
 SdFat SD;
@@ -31,6 +32,19 @@ boolean eflg,basic_d3,save_flg;
 #define PA2PIN          (18)
 #define PA3PIN          (19)
 // ファイル名は、ロングファイルネーム形式対応
+
+void sdinit(void){
+  // SD初期化
+  if( !SD.begin(CABLESELECTPIN,8) )
+  {
+////    Serial.println("Failed : SD.begin");
+    eflg = true;
+  } else {
+////    Serial.println("OK : SD.begin");
+    eflg = false;
+  }
+////    Serial.println("START");
+}
 
 void setup(){
 ////    Serial.begin(9600);
@@ -66,16 +80,7 @@ void setup(){
 
   delay(500);
 
-  // SD初期化
-  if( !SD.begin(CABLESELECTPIN,8) )
-  {
-////    Serial.println("Failed : SD.begin");
-    eflg = true;
-  } else {
-////    Serial.println("OK : SD.begin");
-    eflg = false;
-  }
-////    Serial.println("START");
+  sdinit();
 }
 
 //4BIT受信
@@ -218,10 +223,12 @@ void P6_load(void){
       flg = true;
     } else {
       snd1byte(0xf0);
+      sdinit();
       flg = false;
     }
   }else{
     snd1byte(0xf1);
+    sdinit();
     flg = false;
   }
 }
@@ -255,10 +262,12 @@ void cmt_load(void){
         flg = true;
       } else {
         snd1byte(0xf0);
+        sdinit();
         flg = false;
       }
     }else{
       snd1byte(0xf1);
+      sdinit();
       flg = false;
     }
     if (flg == true){
@@ -579,9 +588,11 @@ void bas_save_ini(void){
       snd1byte(0x00);
     } else {
       snd1byte(0xf0);
+      sdinit();
     }
   }else{
     snd1byte(0xf1);
+    sdinit();
   }
 }
 
@@ -637,10 +648,12 @@ void bas_load(void){
         flg = true;
       } else {
         snd1byte(0xf0);
+        sdinit();
         flg = false;
       }
     }else{
       snd1byte(0xf1);
+      sdinit();
       flg = false;
     }
   } else{
@@ -651,6 +664,7 @@ void bas_load(void){
       flg = true;
     }else{
       snd1byte(0xf1);
+      sdinit();
       flg = false;
     }
   }
@@ -721,9 +735,11 @@ unsigned int lp1;
       snd1byte(0x00);
     }else{
       snd1byte(0xf1);
+      sdinit();
     }
   }else{
     snd1byte(0xf1);
+    sdinit();
   }
 }
 
@@ -750,6 +766,7 @@ void loop()
 ////    Serial.println("FILE LIST START");
 //状態コード送信(OK)
         snd1byte(0x00);
+        sdinit();
         dirlist();
         break;
 //62h:PC-6001 p6tファイル LOAD
@@ -826,5 +843,6 @@ void loop()
   } else {
 //状態コード送信(ERROR)
     snd1byte(0xF0);
+    sdinit();
   }
 }

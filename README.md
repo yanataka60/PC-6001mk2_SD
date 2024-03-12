@@ -164,11 +164,16 @@ B[CR]と動作は同じです。
 　選択したファイルが「CAS」形式の場合、「Mode?(1-4)」と聞いてくるのでモードを入力、次に「How Many Pages?(1-4)」と聞いてくるので画面数を入力、最後に「Auto Run?(y/c/n)」と聞いてくるので「y」とすれば起動直後にCLOAD[CR]RUN[CR]が実行され、「c」とすればCLOAD[CR]だけが実行、「n」とすれば何も実行されません。
 
 #### 操作上の注意
-　「SD-CARD INITIALIZE ERROR」と表示されたときは、SD-CARDが挿入されているか確認し、PC-6001mk2本体をリセットしてください。Arduinoのみのリセットでは復旧しません。
+　~~「SD-CARD INITIALIZE ERROR」と表示されたときは、SD-CARDをいったん抜き再挿入したうえでArduinoをリセットしてください。~~
 
-　SD-CARDにアクセスしていない時に電源が入ったままで SD-CARDを抜いた後、再挿入しSD-CARDにアクセスすると「SD-CARD INITIALIZE ERROR」となる場合があります。再挿入した場合にはSD-CARDにアクセスする前にArduinoを必ずリセットしてください。
+　~~SD-CARDにアクセスしていない時に電源が入ったままで SD-CARDを抜いた後、再挿入しSD-CARDにアクセスすると「SD-CARD INITIALIZE ERROR」となる場合があります。再挿入した場合にはSD-CARDにアクセスする前にArduinoを必ずリセットしてください。~~
 
-　SD-CARDの抜き差しは電源を切った状態で行うほうがより確実です。
+　~~SD-CARDの抜き差しは電源を切った状態で行うほうがより確実です。~~
+
+　(2024.3.12) SD-CARDにアクセスしていない時に電源が入ったままでSD-CARDを抜くと再度SD-CARDを挿入してもSD-CARDにアクセスできない問題を解消しました。(Arduinoを最新版に書き換えてください)
+
+　再度SD-CARDを挿入した後、FDL、LOAD、SAVE等でSD-CARDに3回ほどアクセスすれば復旧します。
+
 
 ### BASICコマンド
 #### CLOAD "DOSファイル名"[CR]
@@ -280,3 +285,5 @@ BASICプログラムを指定したDOSフィル名でSD-CARDに上書きSAVEし�
 　　　　　　 CLOAD、CSAVEがLOAD、SAVEと誤表記されていたものを修正
 
 　2024.1.15 SDカードは8GB以下が望ましいことを追記。
+
+　2024.3.12 電源が入ったままでSD-CARDを抜くと再度SD-CARDを挿入してもSD-CARDにアクセスできない問題を解消した。
