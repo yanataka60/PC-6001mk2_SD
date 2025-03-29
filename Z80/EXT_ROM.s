@@ -2,6 +2,7 @@
 ;2022.10.29 MSG_F8からMODE5の文字を削除。
 ;2022.10.31 MODE1～MODE4、MODE5を統合
 ;2023. 3. 4 AUTO STARTの選択肢をy/c/nとし、CLOADも実行しない選択を追加
+;2025. 3.28 LBUFをキーバッファ(0xFBB9)からRS232Cバッファ(0xFBF9)に変更
 
 AZLCNV		EQU		0BEFH			;小文字->大文字変換
 KYSCAN		EQU		0FBCH			;リアルタイム・キーボード・スキャニング
@@ -16,7 +17,8 @@ STOPFLG		EQU		0FA18H			;STOP ESC KEY FLG
 ASTRLEN		EQU		0FA32H			;自動実行文字列数
 FUNC8		EQU		0FB75H			;F8 KEY 定義領域
 ASTRSTRG	EQU		0FB8DH			;自動実行文字列格納場所
-LBUF		EQU		0FBB9H			;行バッファ及び自動実行文字列格納先
+;LBUF		EQU		0FBB9H			;行バッファ及び自動実行文字列格納先
+LBUF		EQU		0FBF9H			;行バッファ及び自動実行文字列格納先
 FNAME		EQU		0FECBH			;CMT FILE NAME
 MODEFLG		EQU		0FF4EH			;MODE設定WORK
 

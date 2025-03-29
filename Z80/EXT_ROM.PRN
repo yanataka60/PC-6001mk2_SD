@@ -3,6 +3,7 @@
                       	;2022.10.29 MSG_F8からMODE5の文字を削除。
                       	;2022.10.31 MODE1～MODE4、MODE5を統合
                       	;2023. 3. 4 AUTO STARTの選択肢をy/c/nとし、CLOADも実行しない選択を追加
+                      	;2025. 3.28 LBUFをキーバッファ(0xFBB9)からRS232Cバッファ(0xFBF9)に変更
                       	
   0BEF                	AZLCNV		EQU		0BEFH			;小文字->大文字変換
   0FBC                	KYSCAN		EQU		0FBCH			;リアルタイム・キーボード・スキャニング
@@ -17,7 +18,8 @@
   FA32                	ASTRLEN		EQU		0FA32H			;自動実行文字列数
   FB75                	FUNC8		EQU		0FB75H			;F8 KEY 定義領域
   FB8D                	ASTRSTRG	EQU		0FB8DH			;自動実行文字列格納場所
-  FBB9                	LBUF		EQU		0FBB9H			;行バッファ及び自動実行文字列格納先
+                      	;LBUF		EQU		0FBB9H			;行バッファ及び自動実行文字列格納先
+  FBF9                	LBUF		EQU		0FBF9H			;行バッファ及び自動実行文字列格納先
   FECB                	FNAME		EQU		0FECBH			;CMT FILE NAME
   FF4E                	MODEFLG		EQU		0FF4EH			;MODE設定WORK
                       	
@@ -154,7 +156,7 @@
   60BD  FE35          			CP		'5'
   60BF  30E9          			JR		NC,BRET2
                       	
-  60C1  21B9FB        			LD		HL,LBUF				;AUTOSTART文字列格納場所
+  60C1  21F9FB        			LD		HL,LBUF				;AUTOSTART文字列格納場所
   60C4  228DFB        			LD		(ASTRSTRG),HL
   60C7  77            			LD		(HL),A				;PAGE書き込み
   60C8  CD3927        			CALL	MONCLF
@@ -325,7 +327,7 @@
   61E7                	DL1:
   61E7  E5            			PUSH	HL
   61E8  C5            			PUSH	BC
-  61E9  11B9FB        			LD		DE,LBUF
+  61E9  11F9FB        			LD		DE,LBUF
   61EC  EDB0          			LDIR
   61EE  EB            			EX		DE,HL
   61EF  CD6461        	DL2:	CALL	RCVBYTE				;'00H'を受信するまでを一行とする
@@ -339,7 +341,7 @@
   61FE  23            			INC		HL
   61FF  18EE          			JR		DL2
   6201  3600          	DL3:	LD		(HL),00H
-  6203  21B9FB        			LD		HL,LBUF				;'00H'を受信したら一行分を表示して改行
+  6203  21F9FB        			LD		HL,LBUF				;'00H'を受信したら一行分を表示して改行
   6206  7E            	DL31:	LD		A,(HL)
   6207  A7            			AND		A
   6208  2806          			JR		Z,DL33
@@ -429,7 +431,7 @@
                       			
   62A9  3D            	ML1:	DEC		A
   62AA  324EFF        			LD		(MODEFLG),A			;MODE書き込み
-  62AD  21B9FB        			LD		HL,LBUF				;AUTOSTART文字列格納場所
+  62AD  21F9FB        			LD		HL,LBUF				;AUTOSTART文字列格納場所
   62B0  228DFB        			LD		(ASTRSTRG),HL
                       	
   62B3  F5            			PUSH	AF
@@ -552,7 +554,7 @@
   63D6  FE35          			CP		'5'
   63D8  30E9          			JR		NC,PL2
                       	
-  63DA  21B9FB        			LD		HL,LBUF				;AUTOSTART文字列格納場所
+  63DA  21F9FB        			LD		HL,LBUF				;AUTOSTART文字列格納場所
   63DD  228DFB        			LD		(ASTRSTRG),HL
   63E0  77            			LD		(HL),A				;PAGE書き込み
   63E1  CD3927        			CALL	MONCLF
